@@ -1,12 +1,14 @@
 import React from 'react'
 import './Header.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import{FaHome} from "react-icons/fa"
 import {auth} from '../../config/firebaseConfig'
 import {useAuthState} from 'react-firebase-hooks/auth'
+import { signOut } from 'firebase/auth'
+
 
 function Header() {
-
+    let navigate = useNavigate();
     //get user data
     const [user] = useAuthState(auth)
     console.log("user data", user)
@@ -17,7 +19,7 @@ function Header() {
   return (
     <div className='header-container'>
         <p>
-            <FaHome className='header-logo'/>
+            <FaHome className='header-logo' onClick={()=>navigate('/')}/>
         </p>
         <div className='categories-container'>
             {
@@ -30,9 +32,11 @@ function Header() {
                 <span className='username'>
                     {user.displayName? user.displayName : user.email}
                 </span>
+                <button className='auth-link' 
+                        onClick={()=> signOut(auth)}>Logout</button>
             </div>
             :
-            <button className="auth-link">Signup</button>
+            <Link to='auth' className="auth-link">Signup</Link>
         }
         
     </div>
